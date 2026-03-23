@@ -48,6 +48,18 @@ bool topit::Vector< T >::isEmpty() const noexcept
 }
 
 template< class T >
+size_t topit::Vector< T >::getSize() const noexcept
+{
+  return size_;
+}
+
+template< class T >
+size_t topit::Vector< T >::getCapacity() const noexcept
+{
+  return capacity_;
+}
+
+template< class T >
 void topit::Vector< T >::pushBack(const T & val)
 {}
 
