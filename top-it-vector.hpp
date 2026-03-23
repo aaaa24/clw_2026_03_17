@@ -25,6 +25,7 @@ namespace topit {
   private:
     T * data_;
     size_t size_, capacity_;
+    void extend();
   };
 }
 
@@ -39,6 +40,29 @@ template< class T >
 topit::Vector< T >::~Vector()
 {
   delete [] data_;
+}
+
+template< class T >
+void topit::Vector< T >::extend()
+{
+  size_t new_capacity = 0;
+  if (capacity_ == 0) {
+    new_capacity = 1;
+  } else {
+    new_capacity = 2 * capacity_;
+  }
+  T * new_data = new T[new_capacity];
+  for (size_t i = 0; i < size_; ++i) {
+    try {
+      new_data[i] = data_[i];
+    } catch (...) {
+      delete [] new_data;
+      throw;
+    }
+  }
+  delete [] data_;
+  data_ = new_data;
+  capacity_ = new_capacity;
 }
 
 template< class T >
@@ -61,6 +85,18 @@ size_t topit::Vector< T >::getCapacity() const noexcept
 
 template< class T >
 void topit::Vector< T >::pushBack(const T & val)
-{}
+{
+  if (size_ == capacity_) {
+    extend();
+  }
+  data_[size_] = val;
+  ++size_;
+}
+
+template< class T >
+void topit::Vector< T >::popBack()
+{
+  --size_;
+}
 
 #endif
