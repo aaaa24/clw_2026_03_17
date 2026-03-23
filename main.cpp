@@ -8,11 +8,46 @@ bool testEmptyVector()
   return v.isEmpty();
 }
 
+bool testGetSize()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  return v.getSize() == 1;
+}
+
+bool testGetCapacity()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  return v.getCapacity() == 1;
+}
+
+bool testPushBack()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  return v.getSize() == 2;
+}
+
+bool testPopBack()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  v.popBack();
+  return v.getSize() == 1;
+}
+
 int main()
 {
   using test_t = std::pair< const char *, bool(*)() >;
   test_t tests[] = {
-    {"Empty vector", testEmptyVector}
+    {"Empty vector", testEmptyVector},
+    {"Get size", testGetSize},
+    {"Get capacity", testGetCapacity},
+    {"Push back", testPushBack},
+    {"Pop back", testPopBack}
   };
   const size_t count = sizeof(tests) / sizeof(test_t);
   std::cout << std::boolalpha;
