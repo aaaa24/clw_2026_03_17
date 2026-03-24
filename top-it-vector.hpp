@@ -19,8 +19,8 @@ namespace topit {
 
     T & at(size_t pos);
     const T & at(size_t pos) const;
-    T & operator[](size_t pos);
-    const T & operator[](size_t pos) const;
+    T & operator[](size_t pos) noexcept;
+    const T & operator[](size_t pos) const noexcept;
 
     void pushBack(const T & val);
     void popBack();
@@ -91,23 +91,29 @@ size_t topit::Vector< T >::getCapacity() const noexcept
 template< class T >
 T & topit::Vector< T >::at(size_t pos)
 {
+  if (pos >= size_) {
+    throw std::out_of_range("Out of array's size");
+  }
   return data_[pos];
 }
 
 template< class T >
 const T & topit::Vector< T >::at(size_t pos) const
 {
+  if (pos >= size_) {
+    throw std::out_of_range("Out of array's size");
+  }
   return data_[pos];
 }
 
 template< class T >
-T & topit::Vector< T >::operator[](size_t pos)
+T & topit::Vector< T >::operator[](size_t pos) noexcept
 {
   return data_[pos];
 }
 
 template< class T >
-const T & topit::Vector< T >::operator[](size_t pos) const
+const T & topit::Vector< T >::operator[](size_t pos) const noexcept
 {
   return data_[pos];
 }
