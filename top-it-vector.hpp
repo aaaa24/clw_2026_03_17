@@ -10,6 +10,7 @@ namespace topit {
     Vector(const Vector &);
     Vector(Vector &&);
     ~Vector();
+    Vector(size_t size, const T & init);
     Vector & operator=(const Vector &);
     Vector & operator=(Vector &&);
 
@@ -30,6 +31,8 @@ namespace topit {
   private:
     T * data_;
     size_t size_, capacity_;
+
+    explicit Vector(size_t size);
     void extend();
   };
 
@@ -46,17 +49,10 @@ topit::Vector< T >::Vector():
 
 template< class T >
 topit::Vector< T >::Vector(const Vector< T > & v):
-  data_(v.getSize() ? new T[v.getSize()] : nullptr),
-  size_(v.getSize()),
-  capacity_(v.getSize())
+  Vector(v.getSize())
 {
   for (size_t i = 0; i < v.getSize(); ++i) {
-    try {
-      data_[i] = v[i];
-    } catch (...) {
-      delete [] data_;
-      throw;
-    }
+    data_[i] = v[i];
   }
 }
 
@@ -64,6 +60,22 @@ template< class T >
 topit::Vector< T >::~Vector()
 {
   delete [] data_;
+}
+
+template< class T >
+topit::Vector< T >::Vector(size_t size):
+  data_(size ? new T[size] : nullptr),
+  size_(size),
+  capacity_(size)
+{}
+
+template< class T >
+topit::Vector< T >::Vector(size_t size, const T & init):
+  Vector(size)
+{
+  for (size_t i = 0; i < size; ++i) {
+    data_[i] = init;
+  }
 }
 
 template< class T >
