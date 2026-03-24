@@ -47,7 +47,7 @@ topit::Vector< T >::Vector():
 template< class T >
 topit::Vector< T >::Vector(const Vector< T > & v):
   data_(v.getSize() ? new T[v.getSize()] : nullptr),
-  size_t(0),
+  size_(v.getSize()),
   capacity_(v.getSize())
 {
   for (size_t i = 0; i < v.getSize(); ++i) {
@@ -57,7 +57,6 @@ topit::Vector< T >::Vector(const Vector< T > & v):
       delete [] data_;
       throw;
     }
-    ++size_;
   }
 }
 
