@@ -37,11 +37,41 @@ bool testElementInboundAccess()
   return res;
 }
 
+bool testElementInboundConstAccess()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  const topit::Vector< int > & cv = v;
+  bool res = true;
+  try {
+    res = res && cv.at(0) == 42;
+    res = res && cv.at(1) == 52;
+  } catch (...) {
+    res = false;
+  }
+  return res;
+}
+
 bool testElementOutOfBoundAccess()
 {
   topit::Vector< int > v;
   try {
     v.at(0);
+    return false;
+  } catch (const std::out_of_range & e) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testElementOutOfBoundConstAccess()
+{
+  topit::Vector< int > v;
+  const topit::Vector< int > & cv = v;
+  try {
+    cv.at(0);
     return false;
   } catch (const std::out_of_range & e) {
     return true;
@@ -91,7 +121,9 @@ int main()
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Inbound access", testElementInboundAccess},
+    {"Inbound const access", testElementInboundConstAccess},
     {"OutOfBound access", testElementOutOfBoundAccess},
+    {"OutOfBound const access", testElementOutOfBoundConstAccess},
     {"Operator []", testOperatorElementAccess},
     {"Push back", testPushBack},
     {"Pop back", testPopBack}
