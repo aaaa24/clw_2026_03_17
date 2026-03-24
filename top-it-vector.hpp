@@ -32,6 +32,9 @@ namespace topit {
     size_t size_, capacity_;
     void extend();
   };
+
+  template< class T >
+  bool operator==(const Vector< T > & lhs, const Vector< T > & rhs);
 }
 
 template< class T >
@@ -91,10 +94,8 @@ size_t topit::Vector< T >::getCapacity() const noexcept
 template< class T >
 T & topit::Vector< T >::at(size_t pos)
 {
-  if (pos >= size_) {
-    throw std::out_of_range("Out of array's size");
-  }
-  return data_[pos];
+  const Vector< T > * cthis = this;
+  return const_cast< T & >(cthis->at(pos));
 }
 
 template< class T >
@@ -132,6 +133,14 @@ template< class T >
 void topit::Vector< T >::popBack()
 {
   --size_;
+}
+
+template< class T >
+bool topit::operator==(const Vector< T > & lhs, const Vector< T > & rhs)
+{
+  bool isEqual = lhs.getSize() == rhs.getSize();
+  for (size_t i = 0; i < lhs.getSize() && (isEqual = isEqual && lhs[i] == rhs[i]); ++i);
+  return isEqual;
 }
 
 #endif
