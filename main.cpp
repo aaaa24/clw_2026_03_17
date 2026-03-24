@@ -46,8 +46,11 @@ bool testPushBack()
 {
   topit::Vector< int > v;
   v.pushBack(42);
+  bool res = v[0] == 42;
   v.pushBack(52);
-  return v.getSize() == 2;
+  res = res && v[1] == 52;
+  res = res && v.getSize() == 2;
+  return res;
 }
 
 bool testPopBack()
@@ -55,8 +58,11 @@ bool testPopBack()
   topit::Vector< int > v;
   v.pushBack(42);
   v.pushBack(52);
+  bool res = v[1] == 52;
   v.popBack();
-  return v.getSize() == 1;
+  res = res && v[0] == 42;
+  res = res && v.getSize() == 1;
+  return res;
 }
 
 int main()
