@@ -22,6 +22,26 @@ bool testGetCapacity()
   return v.getCapacity() == 1;
 }
 
+bool testAt()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  bool res = v.at(0) == 42;
+  res = res && v.at(1) == 52;
+  return res;
+}
+
+bool testOperatorAt()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  bool res = v[0] == 42;
+  res = res && v[1] == 52;
+  return res;
+}
+
 bool testPushBack()
 {
   topit::Vector< int > v;
@@ -46,6 +66,8 @@ int main()
     {"Empty vector", testEmptyVector},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
+    {"At", testAt},
+    {"Operator []", testOperatorAt},
     {"Push back", testPushBack},
     {"Pop back", testPopBack}
   };

@@ -17,6 +17,11 @@ namespace topit {
     size_t getSize() const noexcept;
     size_t getCapacity() const noexcept;
 
+    T & at(size_t pos);
+    const T & at(size_t pos) const;
+    T & operator[](size_t pos);
+    const T & operator[](size_t pos) const;
+
     void pushBack(const T & val);
     void popBack();
     void insert(size_t i, const T & val);
@@ -81,6 +86,30 @@ template< class T >
 size_t topit::Vector< T >::getCapacity() const noexcept
 {
   return capacity_;
+}
+
+template< class T >
+T & topit::Vector< T >::at(size_t pos)
+{
+  return data_[pos];
+}
+
+template< class T >
+const T & topit::Vector< T >::at(size_t pos) const
+{
+  return data_[pos];
+}
+
+template< class T >
+T & topit::Vector< T >::operator[](size_t pos)
+{
+  return data_[pos];
+}
+
+template< class T >
+const T & topit::Vector< T >::operator[](size_t pos) const
+{
+  return data_[pos];
 }
 
 template< class T >
