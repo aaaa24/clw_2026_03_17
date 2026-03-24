@@ -8,9 +8,17 @@ bool testEmptyVector()
   return v.isEmpty();
 }
 
-bool testCopyConstuctor()
+bool testCopyConstuctorForEmpty()
 {
   topit::Vector< int > v1;
+  topit::Vector< int > v2 = v1;
+  return v1 == v2;
+}
+
+bool testCopyConstuctorForNonEmpty()
+{
+  topit::Vector< int > v1;
+  v1.pushBack(42);
   topit::Vector< int > v2 = v1;
   return v1 == v2;
 }
@@ -125,7 +133,8 @@ int main()
   using test_t = std::pair< const char *, bool(*)() >;
   test_t tests[] = {
     {"Empty vector", testEmptyVector},
-    {"Copy constuctor", testCopyConstuctor},
+    {"Copy empty vector", testCopyConstuctorForEmpty},
+    {"Copy non-empty vector", testCopyConstuctorForNonEmpty},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Inbound access", testElementInboundAccess},
