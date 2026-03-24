@@ -8,11 +8,11 @@ namespace topit {
   struct Vector {
     Vector();
     Vector(const Vector & v);
-    Vector(Vector && v);
+    Vector(Vector && v) noexcept;
     ~Vector();
     Vector(size_t size, const T & init);
     Vector & operator=(const Vector & v);
-    Vector & operator=(Vector && v);
+    Vector & operator=(Vector && v) noexcept;
 
     void swap(Vector< T > & v) noexcept;
 
@@ -59,6 +59,15 @@ topit::Vector< T >::Vector(const Vector< T > & v):
 }
 
 template< class T >
+topit::Vector< T >::Vector(Vector< T > && v) noexcept:
+  data_(v.data_),
+  size_(v.size_),
+  capacity_(v.capacity_)
+{
+  v.data_ = nullptr;
+}
+
+template< class T >
 topit::Vector< T >::~Vector()
 {
   delete [] data_;
@@ -83,10 +92,21 @@ topit::Vector< T >::Vector(size_t size, const T & init):
 template< class T >
 topit::Vector< T > & topit::Vector< T >::operator=(const Vector< T > & v)
 {
-  if (this == &v) {
+  if (this == std::addressof(v)) {
     return *this;
   }
   Vector< T > cpy = v;
+  swap(cpy);
+  return *this;
+}
+
+template< class T >
+topit::Vector< T > & topit::Vector< T >::operator=(Vector< T > && v) noexcept
+{
+  if (this == std::addressof(v)) {
+    return *this;
+  }
+  Vector< T > cpy = std::move(v);
   swap(cpy);
   return *this;
 }
