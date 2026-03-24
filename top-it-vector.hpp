@@ -7,12 +7,14 @@ namespace topit {
   template< class T >
   struct Vector {
     Vector();
-    Vector(const Vector &);
-    Vector(Vector &&);
+    Vector(const Vector & v);
+    Vector(Vector && v);
     ~Vector();
     Vector(size_t size, const T & init);
-    Vector & operator=(const Vector &);
-    Vector & operator=(Vector &&);
+    Vector & operator=(const Vector & v);
+    Vector & operator=(Vector && v);
+
+    void swap(Vector< T > & v) noexcept;
 
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
@@ -76,6 +78,25 @@ topit::Vector< T >::Vector(size_t size, const T & init):
   for (size_t i = 0; i < size; ++i) {
     data_[i] = init;
   }
+}
+
+template< class T >
+topit::Vector< T > & topit::Vector< T >::operator=(const Vector< T > & v)
+{
+  if (this == &v) {
+    return *this;
+  }
+  Vector< T > cpy = v;
+  swap(cpy);
+  return *this;
+}
+
+template< class T >
+void topit::Vector< T >::swap(Vector< T > & v) noexcept
+{
+  std::swap(data_, v.data_);
+  std::swap(size_, v.size_);
+  std::swap(capacity_, v.capacity_);
 }
 
 template< class T >
