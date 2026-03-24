@@ -22,17 +22,35 @@ bool testGetCapacity()
   return v.getCapacity() == 1;
 }
 
-bool testAt()
+bool testElementInboundAccess()
 {
   topit::Vector< int > v;
   v.pushBack(42);
   v.pushBack(52);
-  bool res = v.at(0) == 42;
-  res = res && v.at(1) == 52;
+  bool res = true;
+  try {
+    res = res && v.at(0) == 42;
+    res = res && v.at(1) == 52;
+  } catch (...) {
+    res = false;
+  }
   return res;
 }
 
-bool testOperatorAt()
+bool testElementOutOfBoundAccess()
+{
+  topit::Vector< int > v;
+  try {
+    v.at(0);
+    return false;
+  } catch (const std::out_of_range & e) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testOperatorElementAccess()
 {
   topit::Vector< int > v;
   v.pushBack(42);
@@ -72,8 +90,9 @@ int main()
     {"Empty vector", testEmptyVector},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
-    {"At", testAt},
-    {"Operator []", testOperatorAt},
+    {"Inbound access", testElementInboundAccess},
+    {"OutOfBound access", testElementOutOfBoundAccess},
+    {"Operator []", testOperatorElementAccess},
     {"Push back", testPushBack},
     {"Pop back", testPopBack}
   };
