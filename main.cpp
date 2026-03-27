@@ -69,6 +69,26 @@ bool testCopyOperatorSelf()
     return v.getSize() == 2 && v[0] == 1 && v[1] == 2;
 }
 
+bool testMoveOperatorForEmpty()
+{
+    topit::Vector< int > v1;
+    topit::Vector< int > v2;
+    v2.pushBack(42);
+    v2 = std::move(v1);
+    return v2.isEmpty();
+}
+
+bool testMoveOperatorForNonEmpty()
+{
+    topit::Vector< int > v1;
+    v1.pushBack(1);
+    v1.pushBack(2);
+    topit::Vector< int > v2;
+    v2.pushBack(42);
+    v2 = std::move(v1);
+    return v2.getSize() == 2 && v2[0] == 1 && v2[1] == 2;
+}
+
 bool testGetSize()
 {
   topit::Vector< int > v;
@@ -391,6 +411,8 @@ int main()
     {"Copy operator for empty vector", testCopyOperatorForEmpty},
     {"Copy operator for non-empty vector", testCopyOperatorForNonEmpty},
     {"Copy operator self", testCopyOperatorSelf},
+    {"Move operator for empty vector", testMoveOperatorForEmpty},
+    {"Move operator for non-empty vector", testMoveOperatorForNonEmpty},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Inbound access", testElementInboundAccess},
