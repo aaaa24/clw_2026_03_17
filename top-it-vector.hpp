@@ -27,8 +27,8 @@ namespace topit {
 
     void pushBack(const T & val);
     void popBack();
-    void insert(size_t i, const T & val);
-    void insert(size_t i, const Vector< T > & v, size_t start, size_t end);
+    void insert(size_t pos, const T & val);
+    void insert(size_t pos, const Vector< T > & v, size_t start, size_t end);
     void erase(size_t i);
     void erase(size_t start, size_t end);
 
@@ -217,10 +217,37 @@ void topit::Vector< T >::insert(size_t pos, const T & val)
     cpy.extend();
   }
   for (size_t i = cpy.size_; i > pos; --i) {
-    cpy.data_[i] = std::move(cpy.data_[i - 1]);
+    cpy.data_[i] = cpy.data_[i - 1];
   }
   cpy.data_[pos] = val;
   ++cpy.size_;
+  swap(cpy);
+}
+
+template< class T >
+void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t start, size_t end)
+{
+  if (pos > size_) {
+    throw std::out_of_range("Out of array's size");
+  }
+  if (end <= start || v.getSize() < end) {
+    throw std::out_of_range("Incorrect start or end");
+  }
+  size_t insert_size = end - start;
+  Vector< T > cpy(size_ + insert_size);
+
+  for (size_t i = 0; i < pos; ++i) {
+    cpy[i] = data_[i];
+  }
+
+  for (size_t i = 0; i < insert_size; ++i) {
+    cpy[pos + i] = v.data_[start + i];
+  }
+
+  for (size_t i = 0; i < size_ - pos; ++i) {
+    cpy[pos + insert_size + i] = data_[pos + i];
+  }
+
   swap(cpy);
 }
 

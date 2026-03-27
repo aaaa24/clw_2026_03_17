@@ -145,22 +145,109 @@ bool testPopBack()
   return res;
 }
 
-bool testInsertOne()
+bool testInsertOneToCorrectPos()
 {
   topit::Vector< int > v;
 
-  v.insert(0, 42);
-  bool res = v.at(0) == 42;
+  bool res = true;
+  try {
+    v.insert(0, 42);
+    res = res && v.at(0) == 42;
 
-  v.insert(0, 52);
-  res = res && v.at(0) == 52 && v.at(1) == 42;
+    v.insert(0, 52);
+    res = res && v.at(0) == 52 && v.at(1) == 42;
 
-  v.insert(2, 62);
-  res = res && v.at(0) == 52 && v.at(1) == 42 && v.at(2) == 62;
+    v.insert(2, 62);
+    res = res && v.at(0) == 52 && v.at(1) == 42 && v.at(2) == 62;
 
-  v.insert(1, 72);
-  res = res && v.at(0) == 52 && v.at(1) == 72 && v.at(2) == 42 && v.at(3) == 62;
+    v.insert(1, 72);
+    res = res && v.at(0) == 52 && v.at(1) == 72 && v.at(2) == 42 && v.at(3) == 62;
+  } catch (...) {
+    res = false;
+  }
+  return res;
+}
 
+bool testInsertOneToIncorrectPos()
+{
+  topit::Vector< int > v;
+
+  try {
+    v.insert(1, 42);
+    return false;
+  } catch (const std::out_of_range & e) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testInsertManyToCorrectPos()
+{
+  topit::Vector< int > v;
+
+  topit::Vector< int > yav;
+  yav.pushBack(1);
+  yav.pushBack(2);
+  yav.pushBack(3);
+  yav.pushBack(4);
+
+  bool res = true;
+  try {
+    v.insert(0, yav, 0, 1);
+    res = res && v.at(0) == 1 && v.getSize() == 1;
+
+    v.insert(1, yav, 2, 4);
+    res = res && v.at(0) == 1 && v.at(1) == 3 && v.at(2) == 4 && v.getSize() == 3;
+  } catch (...) {
+    res = false;
+  }
+  return res;
+}
+
+bool testInsertManyToIncorrectPos()
+{
+  topit::Vector< int > v;
+
+  topit::Vector< int > yav;
+  yav.pushBack(1);
+  yav.pushBack(2);
+
+  try {
+    v.insert(1, yav, 0, 2);
+    return false;
+  } catch (const std::exception & e) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testInsertManyWithIncorrectBounds()
+{
+topit::Vector< int > v;
+
+  topit::Vector< int > yav;
+  yav.pushBack(1);
+  yav.pushBack(2);
+
+  bool res = true;
+  try {
+    v.insert(0, v, 2, 1);
+    res = res && false;
+  } catch (const std::exception & e) {
+    res = res && true;
+  } catch (...) {
+    res = res && false;
+  }
+  try {
+    v.insert(0, v, 1, 5);
+    res = res && false;
+  } catch (const std::exception & e) {
+    res = res && true;
+  } catch (...) {
+    res = res && false;
+  }
   return res;
 }
 
@@ -182,7 +269,11 @@ int main()
     {"Operator []", testOperatorElementAccess},
     {"Push back", testPushBack},
     {"Pop back", testPopBack},
-    {"Insert one element", testInsertOne}
+    {"Insert one element to correct position", testInsertOneToCorrectPos},
+    {"Insert one element to incorrect position", testInsertOneToIncorrectPos},
+    {"Insert many elements to correct position", testInsertManyToCorrectPos},
+    {"Insert many elements to incorrect position", testInsertManyToIncorrectPos},
+    {"Insert many elements with incorrect bounds", testInsertManyWithIncorrectBounds}
   };
   const size_t count = sizeof(tests) / sizeof(test_t);
   std::cout << std::boolalpha;
