@@ -117,8 +117,8 @@ bool testOperatorElementAccess()
   topit::Vector< int > v;
   v.pushBack(42);
   v.pushBack(52);
-  bool res = v[0] == 42;
-  res = res && v[1] == 52;
+  bool res = v.at(0) == 42;
+  res = res && v.at(1) == 52;
   return res;
 }
 
@@ -126,9 +126,9 @@ bool testPushBack()
 {
   topit::Vector< int > v;
   v.pushBack(42);
-  bool res = v[0] == 42;
+  bool res = v.at(0) == 42;
   v.pushBack(52);
-  res = res && v[1] == 52;
+  res = res && v.at(1) == 52;
   res = res && v.getSize() == 2;
   return res;
 }
@@ -138,10 +138,29 @@ bool testPopBack()
   topit::Vector< int > v;
   v.pushBack(42);
   v.pushBack(52);
-  bool res = v[1] == 52;
+  bool res = v.at(1) == 52;
   v.popBack();
-  res = res && v[0] == 42;
+  res = res && v.at(0) == 42;
   res = res && v.getSize() == 1;
+  return res;
+}
+
+bool testInsertOne()
+{
+  topit::Vector< int > v;
+
+  v.insert(0, 42);
+  bool res = v.at(0) == 42;
+
+  v.insert(0, 52);
+  res = res && v.at(0) == 52 && v.at(1) == 42;
+
+  v.insert(2, 62);
+  res = res && v.at(0) == 52 && v.at(1) == 42 && v.at(2) == 62;
+
+  v.insert(1, 72);
+  res = res && v.at(0) == 52 && v.at(1) == 72 && v.at(2) == 42 && v.at(3) == 62;
+
   return res;
 }
 
@@ -162,7 +181,8 @@ int main()
     {"OutOfBound const access", testElementOutOfBoundConstAccess},
     {"Operator []", testOperatorElementAccess},
     {"Push back", testPushBack},
-    {"Pop back", testPopBack}
+    {"Pop back", testPopBack},
+    {"Insert one element", testInsertOne}
   };
   const size_t count = sizeof(tests) / sizeof(test_t);
   std::cout << std::boolalpha;

@@ -28,7 +28,9 @@ namespace topit {
     void pushBack(const T & val);
     void popBack();
     void insert(size_t i, const T & val);
+    void insert(size_t i, const Vector< T > & v, size_t start, size_t end);
     void erase(size_t i);
+    void erase(size_t start, size_t end);
 
   private:
     T * data_;
@@ -202,6 +204,24 @@ template< class T >
 void topit::Vector< T >::popBack()
 {
   --size_;
+}
+
+template< class T >
+void topit::Vector< T >::insert(size_t pos, const T & val)
+{
+  if (pos > size_) {
+    throw std::out_of_range("Out of array's size");
+  }
+  Vector< T > cpy = *this;
+  if (cpy.size_ == cpy.capacity_) {
+    cpy.extend();
+  }
+  for (size_t i = cpy.size_; i > pos; --i) {
+    cpy.data_[i] = std::move(cpy.data_[i - 1]);
+  }
+  cpy.data_[pos] = val;
+  ++cpy.size_;
+  swap(cpy);
 }
 
 template< class T >
