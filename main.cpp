@@ -308,6 +308,9 @@ bool testEraseRange()
     v.erase(3, 5);
     res = res && v.getSize() == 3;
     res = res && v[0] == 5 && v[1] == 6 && v[2] == 7;
+
+    v.erase(0, v.getSize());
+    res = res && v.isEmpty();
   } catch (...) {
     res = false;
   }
