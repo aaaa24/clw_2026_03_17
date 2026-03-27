@@ -8,19 +8,36 @@ bool testEmptyVector()
   return v.isEmpty();
 }
 
-bool testCopyConstuctorForEmpty()
+bool testCopyConstructorForEmpty()
 {
   topit::Vector< int > v1;
   topit::Vector< int > v2 = v1;
   return v1 == v2;
 }
 
-bool testCopyConstuctorForNonEmpty()
+bool testCopyConstructorForNonEmpty()
 {
   topit::Vector< int > v1;
   v1.pushBack(42);
   topit::Vector< int > v2 = v1;
   return v1 == v2;
+}
+
+bool testMoveConstructorForEmpty()
+{
+  topit::Vector< int > v1;
+  topit::Vector< int > v2 = std::move(v1);
+  return v2.isEmpty();
+}
+
+bool testMoveConstructorForNonEmpty()
+{
+  topit::Vector< int > v1;
+  v1.pushBack(42);
+  topit::Vector< int > v2 = std::move(v1);
+  bool res = v2.at(0) == 42;
+  res = res && v2.getSize() == 1;
+  return res;
 }
 
 bool testGetSize()
@@ -133,8 +150,10 @@ int main()
   using test_t = std::pair< const char *, bool(*)() >;
   test_t tests[] = {
     {"Empty vector", testEmptyVector},
-    {"Copy empty vector", testCopyConstuctorForEmpty},
-    {"Copy non-empty vector", testCopyConstuctorForNonEmpty},
+    {"Copy empty vector", testCopyConstructorForEmpty},
+    {"Copy non-empty vector", testCopyConstructorForNonEmpty},
+    {"Move empty vector", testMoveConstructorForEmpty},
+    {"Move non-empty vector", testMoveConstructorForNonEmpty},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Inbound access", testElementInboundAccess},
