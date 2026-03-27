@@ -35,7 +35,7 @@ bool testMoveConstructorForNonEmpty()
   topit::Vector< int > v1;
   v1.pushBack(42);
   topit::Vector< int > v2 = std::move(v1);
-  bool res = v2.at(0) == 42;
+  bool res = v2[0] == 42;
   res = res && v2.getSize() == 1;
   return res;
 }
@@ -117,8 +117,8 @@ bool testOperatorElementAccess()
   topit::Vector< int > v;
   v.pushBack(42);
   v.pushBack(52);
-  bool res = v.at(0) == 42;
-  res = res && v.at(1) == 52;
+  bool res = v[0] == 42;
+  res = res && v[1] == 52;
   return res;
 }
 
@@ -126,9 +126,9 @@ bool testPushBack()
 {
   topit::Vector< int > v;
   v.pushBack(42);
-  bool res = v.at(0) == 42;
+  bool res = v[0] == 42;
   v.pushBack(52);
-  res = res && v.at(1) == 52;
+  res = res && v[1] == 52;
   res = res && v.getSize() == 2;
   return res;
 }
@@ -138,9 +138,9 @@ bool testPopBack()
   topit::Vector< int > v;
   v.pushBack(42);
   v.pushBack(52);
-  bool res = v.at(1) == 52;
+  bool res = v[1] == 52;
   v.popBack();
-  res = res && v.at(0) == 42;
+  res = res && v[0] == 42;
   res = res && v.getSize() == 1;
   return res;
 }
@@ -152,16 +152,16 @@ bool testInsertOneToCorrectPos()
   bool res = true;
   try {
     v.insert(0, 42);
-    res = res && v.at(0) == 42;
+    res = res && v[0] == 42;
 
     v.insert(0, 52);
-    res = res && v.at(0) == 52 && v.at(1) == 42;
+    res = res && v[0] == 52 && v[1] == 42;
 
     v.insert(2, 62);
-    res = res && v.at(0) == 52 && v.at(1) == 42 && v.at(2) == 62;
+    res = res && v[0] == 52 && v[1] == 42 && v[2] == 62;
 
     v.insert(1, 72);
-    res = res && v.at(0) == 52 && v.at(1) == 72 && v.at(2) == 42 && v.at(3) == 62;
+    res = res && v[0] == 52 && v[1] == 72 && v[2] == 42 && v[3] == 62;
   } catch (...) {
     res = false;
   }
@@ -195,10 +195,10 @@ bool testInsertManyToCorrectPos()
   bool res = true;
   try {
     v.insert(0, yav, 0, 1);
-    res = res && v.at(0) == 1 && v.getSize() == 1;
+    res = res && v[0] == 1 && v.getSize() == 1;
 
     v.insert(1, yav, 2, 4);
-    res = res && v.at(0) == 1 && v.at(1) == 3 && v.at(2) == 4 && v.getSize() == 3;
+    res = res && v[0] == 1 && v[1] == 3 && v[2] == 4 && v.getSize() == 3;
   } catch (...) {
     res = false;
   }
@@ -231,24 +231,120 @@ topit::Vector< int > v;
   yav.pushBack(1);
   yav.pushBack(2);
 
-  bool res = true;
   try {
     v.insert(0, v, 2, 1);
-    res = res && false;
+    return false;
   } catch (const std::exception & e) {
-    res = res && true;
   } catch (...) {
-    res = res && false;
+    return false;
   }
+
   try {
     v.insert(0, v, 1, 5);
-    res = res && false;
+    return false;
   } catch (const std::exception & e) {
-    res = res && true;
   } catch (...) {
-    res = res && false;
+    return false;
+  }
+  return true;
+}
+
+bool testEraseOneElement()
+{
+    topit::Vector< int > v;
+    for (int i = 0; i < 5; ++i) {
+      v.pushBack(i);
+    }
+
+    bool res = true;
+    try {
+        v.erase(2);
+        res = res && v.getSize() == 4;
+        res = res && v[0] == 0 && v[1] == 1 && v[2] == 3 && v[3] == 4;
+
+        v.erase(0);
+        res = res && v.getSize() == 3;
+        res = res && v[0] == 1 && v[1] == 3 && v[2] == 4;
+
+        v.erase(2);
+        res = res && v.getSize() == 2;
+        res = res && v[0] == 1 && v[1] == 3;
+    } catch (...) {
+        res = false;
+    }
+    return res;
+}
+
+bool testEraseOneElementOutOfRange()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  try {
+    v.erase(1);
+    return false;
+  } catch (const std::out_of_range &) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testEraseRange()
+{
+  topit::Vector< int > v;
+  for (int i = 0; i < 10; ++i) {
+    v.pushBack(i);
+  }
+  bool res = true;
+  try {
+    v.erase(2, 5);
+    res = res && v.getSize() == 7;
+    res = res && v[0] == 0 && v[1] == 1 && v[2] == 5 && v[3] == 6 && v[4] == 7 && v[5] == 8 && v[6] == 9;
+
+    v.erase(0, 2);
+    res = res && v.getSize() == 5;
+    res = res && v[0] == 5 && v[1] == 6 && v[2] == 7 && v[3] == 8 && v[4] == 9;
+
+    v.erase(3, 5);
+    res = res && v.getSize() == 3;
+    res = res && v[0] == 5 && v[1] == 6 && v[2] == 7;
+  } catch (...) {
+    res = false;
   }
   return res;
+}
+
+bool testEraseRangeOutOfRange()
+{
+  topit::Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+
+  try {
+    v.erase(3, 4);
+    return false;
+  } catch (const std::out_of_range &) {
+  } catch (...) {
+    return false;
+  }
+
+  try {
+    v.erase(1, 3);
+    return false;
+  } catch (const std::out_of_range &) {
+  } catch (...) {
+    return false;
+  }
+
+  try {
+    v.erase(1, 1);
+    return false;
+  } catch (const std::out_of_range &) {
+  } catch (...) {
+    return false;
+  }
+
+  return true;
 }
 
 int main()
@@ -273,7 +369,11 @@ int main()
     {"Insert one element to incorrect position", testInsertOneToIncorrectPos},
     {"Insert many elements to correct position", testInsertManyToCorrectPos},
     {"Insert many elements to incorrect position", testInsertManyToIncorrectPos},
-    {"Insert many elements with incorrect bounds", testInsertManyWithIncorrectBounds}
+    {"Insert many elements with incorrect bounds", testInsertManyWithIncorrectBounds},
+    {"Erase one element", testEraseOneElement},
+    {"Erase one element out of range", testEraseOneElementOutOfRange},
+    {"Erase range", testEraseRange},
+    {"Erase range out of range", testEraseRangeOutOfRange}
   };
   const size_t count = sizeof(tests) / sizeof(test_t);
   std::cout << std::boolalpha;

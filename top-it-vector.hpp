@@ -252,6 +252,47 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t start,
 }
 
 template< class T >
+void topit::Vector< T >::erase(size_t i)
+{
+    if (i >= size_) {
+        throw std::out_of_range("Out of array's size");
+    }
+
+    Vector< T > cpy(size_ - 1);
+
+    for (size_t j = 0; j < i; ++j) {
+        cpy[j] = data_[j];
+    }
+
+    for (size_t j = i + 1; j < size_; ++j) {
+        cpy[j - 1] = data_[j];
+    }
+
+    swap(cpy);
+}
+
+template< class T >
+void topit::Vector< T >::erase(size_t start, size_t end)
+{
+    if (start > size_ || end > size_ || start >= end) {
+        throw std::out_of_range("Invalid erase range");
+    }
+    size_t remove_count = end - start;
+    size_t new_size = size_ - remove_count;
+    Vector< T > cpy(new_size);
+
+    for (size_t j = 0; j < start; ++j) {
+        cpy[j] = data_[j];
+    }
+
+    for (size_t j = end; j < size_; ++j) {
+        cpy[j - remove_count] = data_[j];
+    }
+
+    swap(cpy);
+}
+
+template< class T >
 bool topit::operator==(const Vector< T > & lhs, const Vector< T > & rhs)
 {
   bool isEqual = lhs.getSize() == rhs.getSize();
