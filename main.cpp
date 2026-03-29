@@ -145,6 +145,23 @@ bool testCEndConst()
   return iter == v.cend();
 }
 
+bool testSwap()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+
+  topit::Vector< int > yav;
+  yav.pushBack(62);
+
+  v.swap(yav);
+
+  bool res = v.getSize() == 1 && yav.getSize() == 2;
+  res = res && v[0] == 62;
+  res = res && yav[0] == 42 && yav[1] == 52;
+  return res;
+}
+
 bool testGetSize()
 {
   topit::Vector< int > v;
@@ -475,6 +492,7 @@ int main()
     {"Get begin const iterator", testEndConst},
     {"Get cbegin const iterator", testCBeginConst},
     {"Get cend const iterator", testCEndConst},
+    {"Swap", testSwap},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Inbound access", testElementInboundAccess},
