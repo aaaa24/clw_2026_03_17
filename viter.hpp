@@ -1,6 +1,8 @@
 #ifndef VITER_HPP
 #define VITER_HPP
 
+#include <cstddef>
+
 namespace topit {
   template< class T >
   struct Vector;
@@ -40,5 +42,23 @@ template< class T >
 topit::VIter< T >::VIter(T * ptr):
   ptr_(ptr)
 {}
+
+template< class T >
+T & topit::VIter< T >::operator*() const
+{
+  return *ptr_;
+}
+
+template< class T >
+T * topit::VIter< T >::operator->() const
+{
+  return ptr_;
+}
+
+template< class T >
+T & topit::VIter< T >::operator[](std::ptrdiff_t n) const
+{
+  return ptr_[n];
+}
 
 #endif
