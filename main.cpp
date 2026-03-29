@@ -347,8 +347,7 @@ bool testInsertManyToIncorrectPos()
 
 bool testInsertManyWithIncorrectBounds()
 {
-topit::Vector< int > v;
-
+  topit::Vector< int > v;
   topit::Vector< int > yav;
   yav.pushBack(1);
   yav.pushBack(2);
@@ -418,33 +417,33 @@ bool testIterInsertMany()
   return res;
 }
 
-bool testEraseOneElement()
+bool testEraseOne()
 {
-    topit::Vector< int > v;
-    for (int i = 0; i < 5; ++i) {
-      v.pushBack(i);
-    }
+  topit::Vector< int > v;
+  for (int i = 0; i < 5; ++i) {
+    v.pushBack(i);
+  }
 
-    bool res = true;
-    try {
-        v.erase(2);
-        res = res && v.getSize() == 4;
-        res = res && v[0] == 0 && v[1] == 1 && v[2] == 3 && v[3] == 4;
+  bool res = true;
+  try {
+    v.erase(2);
+    res = res && v.getSize() == 4;
+    res = res && v[0] == 0 && v[1] == 1 && v[2] == 3 && v[3] == 4;
 
-        v.erase(0);
-        res = res && v.getSize() == 3;
-        res = res && v[0] == 1 && v[1] == 3 && v[2] == 4;
+    v.erase(0);
+    res = res && v.getSize() == 3;
+    res = res && v[0] == 1 && v[1] == 3 && v[2] == 4;
 
-        v.erase(2);
-        res = res && v.getSize() == 2;
-        res = res && v[0] == 1 && v[1] == 3;
-    } catch (...) {
-        res = false;
-    }
-    return res;
+    v.erase(2);
+    res = res && v.getSize() == 2;
+    res = res && v[0] == 1 && v[1] == 3;
+  } catch (...) {
+    res = false;
+  }
+  return res;
 }
 
-bool testEraseOneElementOutOfRange()
+bool testEraseOneOutOfRange()
 {
   topit::Vector< int > v;
   v.pushBack(42);
@@ -458,7 +457,7 @@ bool testEraseOneElementOutOfRange()
   }
 }
 
-bool testEraseRange()
+bool testEraseMany()
 {
   topit::Vector< int > v;
   for (int i = 0; i < 10; ++i) {
@@ -490,7 +489,7 @@ bool testEraseRange()
   return res;
 }
 
-bool testEraseRangeOutOfRange()
+bool testEraseOutOfRange()
 {
   topit::Vector< int > v;
   v.pushBack(1);
@@ -513,6 +512,63 @@ bool testEraseRangeOutOfRange()
   }
 
   return true;
+}
+
+bool testIterEraseOne()
+{
+  topit::Vector< int > v;
+  for (int i = 0; i < 5; ++i) {
+    v.pushBack(i);
+  }
+  topit::VIter< int > iter = v.begin();
+
+  bool res = true;
+
+  iter = v.erase(iter + 2);
+  res = res && v.getSize() == 4;
+  res = res && v[0] == 0 && v[1] == 1 && v[2] == 3 && v[3] == 4;
+
+  iter = v.erase(iter - 2);
+  res = res && v.getSize() == 3;
+  res = res && v[0] == 1 && v[1] == 3 && v[2] == 4;
+
+  iter = v.erase(iter + 2);
+  res = res && v.getSize() == 2;
+  res = res && v[0] == 1 && v[1] == 3;
+
+  return res;
+}
+
+bool testIterEraseMany()
+{
+  topit::Vector< int > v;
+  for (int i = 0; i < 10; ++i) {
+    v.pushBack(i);
+  }
+  topit::VIter< int > iter = v.begin();
+
+  bool res = true;
+
+  iter = v.erase(iter + 2, iter + 5);
+  res = res && v.getSize() == 7;
+  res = res && v[0] == 0 && v[1] == 1 && v[2] == 5 && v[3] == 6 && v[4] == 7 && v[5] == 8 && v[6] == 9;
+
+  iter = v.erase(iter - 2, iter);
+  res = res && v.getSize() == 5;
+  res = res && v[0] == 5 && v[1] == 6 && v[2] == 7 && v[3] == 8 && v[4] == 9;
+
+  iter = v.erase(iter + 3, iter + 5);
+  res = res && v.getSize() == 3;
+  res = res && v[0] == 5 && v[1] == 6 && v[2] == 7;
+
+  iter = v.erase(iter, iter);
+  res = res && v.getSize() == 3;
+  res = res && v[0] == 5 && v[1] == 6 && v[2] == 7;
+
+  v.erase(v.begin(), v.end());
+  res = res && v.isEmpty();
+
+  return res;
 }
 
 int main()
@@ -552,10 +608,12 @@ int main()
     {"Insert many elements with incorrect bounds", testInsertManyWithIncorrectBounds},
     {"Insert one element to correct position by iter", testIterInsertOne},
     {"Insert many elements to correct position by iter", testIterInsertMany},
-    {"Erase one element", testEraseOneElement},
-    {"Erase one element out of range", testEraseOneElementOutOfRange},
-    {"Erase range", testEraseRange},
-    {"Erase range out of range", testEraseRangeOutOfRange}
+    {"Erase one element", testEraseOne},
+    {"Erase one element out of range", testEraseOneOutOfRange},
+    {"Erase range", testEraseMany},
+    {"Erase range out of range", testEraseOutOfRange},
+    {"Erase one element by iter", testIterEraseOne},
+    {"Erase many elements by iter", testIterEraseMany},
   };
   const size_t count = sizeof(tests) / sizeof(test_t);
   std::cout << std::boolalpha;

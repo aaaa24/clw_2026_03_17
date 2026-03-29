@@ -44,8 +44,10 @@ namespace topit {
     VIter< T > insert(VIter< T > pos, T && val);
     VIter< T > insert(VIter< T > pos, VIter< T > first, VIter< T > last);
 
-    void erase(size_t i);
-    void erase(size_t start, size_t end);
+    void erase(size_t pos);
+    void erase(size_t fisrt, size_t last);
+    VIter< T > erase(VIter< T > pos);
+    VIter< T > erase(VIter< T > fisrt, VIter< T > last);
 
   private:
     T * data_;
@@ -386,22 +388,22 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, VIter< T > first, V
 }
 
 template< class T >
-void topit::Vector< T >::erase(size_t i)
+void topit::Vector< T >::erase(size_t pos)
 {
-  if (i >= size_) {
+  if (pos >= size_) {
     throw std::out_of_range("Out of array's size");
   }
-  if (i == size_ - 1) {
+  if (pos == size_ - 1) {
     popBack();
     return;
   }
 
-  Vector< T > cpy(size_ - 1);
+  Vector< T > cpy{size_ - 1};
 
-  for (size_t j = 0; j < i; ++j) {
+  for (size_t j = 0; j < pos; ++j) {
     cpy[j] = data_[j];
   }
-  for (size_t j = i + 1; j < size_; ++j) {
+  for (size_t j = pos + 1; j < size_; ++j) {
     cpy[j - 1] = data_[j];
   }
 
@@ -409,31 +411,81 @@ void topit::Vector< T >::erase(size_t i)
 }
 
 template< class T >
-void topit::Vector< T >::erase(size_t start, size_t end)
+void topit::Vector< T >::erase(size_t first, size_t last)
 {
-  if (start > size_ || end > size_ || start > end) {
+  if (first > size_ || last > size_ || first > last) {
     throw std::out_of_range("Invalid erase range");
   }
-  if (start == end) {
+  if (first == last) {
     return;
   }
-  if (end == size_) {
-    size_ -= end - start;
+  if (last == size_) {
+    size_ -= last - first;
     return;
   }
-  size_t remove_count = end - start;
-  size_t new_size = size_ - remove_count;
-  Vector< T > cpy(new_size);
+  size_t remove_count = last - first;
+  Vector< T > cpy{size_ - remove_count};
 
-  for (size_t j = 0; j < start; ++j) {
+  for (size_t j = 0; j < first; ++j) {
     cpy[j] = data_[j];
   }
 
-  for (size_t j = end; j < size_; ++j) {
+  for (size_t j = last; j < size_; ++j) {
     cpy[j - remove_count] = data_[j];
   }
 
   swap(cpy);
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::erase(VIter< T > pos)
+{
+  if (pos == end() - 1) {
+    popBack();
+    return end();
+  }
+
+  std::ptrdiff_t index = pos - begin();
+  Vector< T > cpy{size_ - 1};
+  VIter< T > cpy_iter = cpy.begin();
+
+  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+  for (VIter< T > iter = pos + 1; iter < end(); ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+
+  swap(cpy);
+  return VIter< T >{data_ + index};
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::erase(VIter< T > first, VIter< T > last)
+{
+  if (first == last) {
+    return last;
+  }
+  if (last == end()) {
+    size_ -= last - first;
+    return end();
+  }
+
+  std::ptrdiff_t index = first - begin();
+  std::ptrdiff_t remove_count = last - first;
+
+  Vector< T > cpy{size_ - remove_count};
+  VIter< T > cpy_iter = cpy.begin();
+
+  for (VIter< T > iter = begin(); iter < first; ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+  for (VIter< T > iter = last; iter < end(); ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+
+  swap(cpy);
+  return VIter< T >{data_ + index};
 }
 
 template< class T >
