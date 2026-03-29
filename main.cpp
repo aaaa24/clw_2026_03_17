@@ -393,6 +393,29 @@ bool testIterInsertOne()
   return res;
 }
 
+bool testIterInsertMany()
+{
+  topit::Vector< int > v;
+  topit::VIter< int > iter = v.begin();
+
+  topit::Vector< int > yav;
+  yav.pushBack(1);
+  yav.pushBack(2);
+  yav.pushBack(3);
+  yav.pushBack(4);
+  topit::VIter< int > yav_iter = yav.begin();
+
+  bool res = true;
+
+  iter = v.insert(iter, yav_iter, yav_iter + 1);
+  res = res && v[0] == 1 && v.getSize() == 1;
+
+  iter = v.insert(iter + 1, yav_iter + 2, yav_iter + 4);
+  res = res && v[0] == 1 && v[1] == 3 && v[2] == 4 && v.getSize() == 3;
+
+  return res;
+}
+
 bool testEraseOneElement()
 {
     topit::Vector< int > v;
@@ -530,6 +553,7 @@ int main()
     {"Insert many elements to incorrect position", testInsertManyToIncorrectPos},
     {"Insert many elements with incorrect bounds", testInsertManyWithIncorrectBounds},
     {"Insert one element to correct position by iter", testIterInsertOne},
+    {"Insert many elements to correct position by iter", testIterInsertMany},
     {"Erase one element", testEraseOneElement},
     {"Erase one element out of range", testEraseOneElementOutOfRange},
     {"Erase range", testEraseRange},

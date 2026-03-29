@@ -39,10 +39,10 @@ namespace topit {
     void popBack();
 
     void insert(size_t pos, const T & val);
-    void insert(size_t pos, const Vector< T > & v, size_t start, size_t end);
+    void insert(size_t pos, const Vector< T > & v, size_t fisrt, size_t last);
     VIter< T > insert(VIter< T > pos, const T & val);
     VIter< T > insert(VIter< T > pos, T && val);
-    VIter< T > insert(VIter< T > pos, const Vector< T > & v, VIter< T > start, VIter< T > end);
+    VIter< T > insert(VIter< T > pos, VIter< T > first, VIter< T > last);
 
     void erase(size_t i);
     void erase(size_t start, size_t end);
@@ -276,15 +276,15 @@ void topit::Vector< T >::insert(size_t pos, const T & val)
 }
 
 template< class T >
-void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t start, size_t end)
+void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t first, size_t last)
 {
   if (pos > size_) {
     throw std::out_of_range("Out of array's size");
   }
-  if (end <= start || v.getSize() < end) {
+  if (last <= first || v.getSize() < last) {
     throw std::out_of_range("Incorrect start or end");
   }
-  size_t insert_size = end - start;
+  size_t insert_size = last - first;
   Vector< T > cpy{size_ + insert_size};
 
   for (size_t i = 0; i < pos; ++i) {
@@ -292,7 +292,7 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t start,
   }
 
   for (size_t i = 0; i < insert_size; ++i) {
-    cpy[pos + i] = v.data_[start + i];
+    cpy[pos + i] = v.data_[first + i];
   }
 
   for (size_t i = 0; i < size_ - pos; ++i) {
@@ -353,9 +353,36 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, T && val)
 }
 
 template< class T >
-topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const Vector< T > & v, VIter< T > start, VIter< T > end)
+topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, VIter< T > first, VIter< T > last)
 {
+  if (first == last) {
+    return pos;
+  }
 
+  std::ptrdiff_t index = pos - begin();
+  if (pos == end()) {
+    for (VIter< T > iter = first; iter < last; ++iter) {
+      pushBack(*iter);
+    }
+    return VIter< T >{data_ + index};
+  }
+
+  std::ptrdiff_t insert_size = last - first;
+  Vector< T > cpy{size_ + insert_size};
+  VIter< T > cpy_iter = cpy.begin();
+
+  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+  for (VIter< T > iter = first; iter < last; ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+  for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+
+  swap(cpy);
+  return VIter< T >{data_ + index};
 }
 
 template< class T >
