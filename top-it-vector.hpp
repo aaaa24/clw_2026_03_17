@@ -3,6 +3,9 @@
 
 #include <cstddef>
 
+#include "VIter.hpp"
+#include "VCIter.hpp"
+
 namespace topit {
   template< class T >
   struct Vector {
