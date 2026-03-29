@@ -413,6 +413,8 @@ bool testIterInsertMany()
   iter = v.insert(iter + 1, yav_iter + 2, yav_iter + 4);
   res = res && v[0] == 1 && v[1] == 3 && v[2] == 4 && v.getSize() == 3;
 
+  res = res && iter == v.insert(iter, yav_iter, yav_iter);
+
   return res;
 }
 
