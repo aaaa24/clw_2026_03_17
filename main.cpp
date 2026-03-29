@@ -371,32 +371,25 @@ topit::Vector< int > v;
   return true;
 }
 
-bool testIterInsertOneToCorrectPos()
+bool testIterInsertOne()
 {
   topit::Vector< int > v;
   topit::VIter< int > iter = v.begin();
-
   bool res = true;
-  try {
-    int num = 42;
-    iter = v.insert(iter, num);
-    res = res && v[0] == 42;
-    std::cout << res << "\n";
 
-    iter = v.insert(iter, 52);
-    res = res && v[0] == 52 && v[1] == 42;
-    std::cout << res << "\n";
+  int num = 42;
+  iter = v.insert(iter, num);
+  res = res && v[0] == 42;
 
-    iter = v.insert(iter + 2, 62);
-    res = res && v[0] == 52 && v[1] == 42 && v[2] == 62;
-    std::cout << res << "\n";
+  iter = v.insert(iter, 52);
+  res = res && v[0] == 52 && v[1] == 42;
 
-    iter = v.insert(iter - 1, 72);
-    res = res && v[0] == 52 && v[1] == 72 && v[2] == 42 && v[3] == 62;
-    std::cout << res << "\n";
-  } catch (...) {
-    res = false;
-  }
+  iter = v.insert(iter + 2, 62);
+  res = res && v[0] == 52 && v[1] == 42 && v[2] == 62;
+
+  iter = v.insert(iter - 1, 72);
+  res = res && v[0] == 52 && v[1] == 72 && v[2] == 42 && v[3] == 62;
+
   return res;
 }
 
@@ -536,7 +529,7 @@ int main()
     {"Insert many elements to correct position", testInsertManyToCorrectPos},
     {"Insert many elements to incorrect position", testInsertManyToIncorrectPos},
     {"Insert many elements with incorrect bounds", testInsertManyWithIncorrectBounds},
-    {"Insert one element to correct position by iter", testIterInsertOneToCorrectPos},
+    {"Insert one element to correct position by iter", testIterInsertOne},
     {"Erase one element", testEraseOneElement},
     {"Erase one element out of range", testEraseOneElementOutOfRange},
     {"Erase range", testEraseRange},
