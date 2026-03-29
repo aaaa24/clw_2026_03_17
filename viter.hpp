@@ -109,4 +109,40 @@ std::ptrdiff_t topit::VIter< T >::operator-(const VIter< T > & other) const
   return ptr_ - other.ptr_;
 }
 
+template< class T >
+bool topit::VIter< T >::operator==(const VIter< T > & other) const noexcept
+{
+  return ptr_ == other.ptr_;
+}
+
+template< class T >
+bool topit::VIter< T >::operator!=(const VIter< T > & other) const noexcept
+{
+  return !(*this == other);
+}
+
+template< class T >
+bool topit::VIter< T >::operator<(const VIter< T > & other) const noexcept
+{
+  return ptr_ < other.ptr_;
+}
+
+template< class T >
+bool topit::VIter< T >::operator>(const VIter< T > & other) const noexcept
+{
+  return ptr_ > other.ptr_;
+}
+
+template< class T >
+bool topit::VIter< T >::operator<=(const VIter< T > & other) const noexcept
+{
+  return ptr_ <= other.ptr_;
+}
+
+template< class T >
+bool topit::VIter< T >::operator>=(const VIter< T > & other) const noexcept
+{
+  return ptr_ >= other.ptr_;
+}
+
 #endif
