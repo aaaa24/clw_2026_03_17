@@ -31,4 +31,14 @@ namespace topit {
   };
 }
 
+template< class T >
+topit::VIter< T >::VIter():
+  ptr_(nullptr)
+{}
+
+template< class T >
+topit::VIter< T >::VIter(T * ptr):
+  ptr_(ptr)
+{}
+
 #endif
