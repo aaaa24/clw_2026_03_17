@@ -37,8 +37,13 @@ namespace topit {
 
     void pushBack(const T & val);
     void popBack();
+
     void insert(size_t pos, const T & val);
     void insert(size_t pos, const Vector< T > & v, size_t start, size_t end);
+    VIter< T > insert(VIter< T > pos, const T & val);
+    VIter< T > insert(VIter< T > pos, T && val);
+    VIter< T > insert(VIter< T > pos, const Vector< T > & v, VIter< T > start, VIter< T > end);
+
     void erase(size_t i);
     void erase(size_t start, size_t end);
 
@@ -280,7 +285,7 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t start,
     throw std::out_of_range("Incorrect start or end");
   }
   size_t insert_size = end - start;
-  Vector< T > cpy(size_ + insert_size);
+  Vector< T > cpy{size_ + insert_size};
 
   for (size_t i = 0; i < pos; ++i) {
     cpy[i] = data_[i];
@@ -295,6 +300,62 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t start,
   }
 
   swap(cpy);
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const T & val)
+{
+  if (pos == end()) {
+    pushBack(val);
+    return VIter< T >{data_ + size_ - 1};
+  }
+
+  std::ptrdiff_t index = pos - begin();
+
+  Vector< T > cpy{size_ + 1};
+  VIter< T > cpy_iter = cpy.begin();
+  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+  *cpy_iter = val;
+  ++cpy_iter;
+  for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+
+  swap(cpy);
+  return VIter< T >{data_ + index};
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, T && val)
+{
+  if (pos == end()) {
+    pushBack(std::move(val));
+    return VIter< T >{data_+ size_ - 1};
+  }
+
+  std::ptrdiff_t index = pos - begin();
+
+  Vector< T > cpy{size_ + 1};
+  VIter< T > cpy_iter = cpy.begin();
+  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+  *cpy_iter = std::move(val);
+  ++cpy_iter;
+  for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
+    *cpy_iter = *iter;
+  }
+
+  swap(cpy);
+  return VIter< T >{data_ + index};
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const Vector< T > & v, VIter< T > start, VIter< T > end)
+{
+
 }
 
 template< class T >
