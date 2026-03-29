@@ -388,42 +388,52 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, VIter< T > first, V
 template< class T >
 void topit::Vector< T >::erase(size_t i)
 {
-    if (i >= size_) {
-        throw std::out_of_range("Out of array's size");
-    }
+  if (i >= size_) {
+    throw std::out_of_range("Out of array's size");
+  }
+  if (i == size_ - 1) {
+    popBack();
+    return;
+  }
 
-    Vector< T > cpy(size_ - 1);
+  Vector< T > cpy(size_ - 1);
 
-    for (size_t j = 0; j < i; ++j) {
-        cpy[j] = data_[j];
-    }
+  for (size_t j = 0; j < i; ++j) {
+    cpy[j] = data_[j];
+  }
+  for (size_t j = i + 1; j < size_; ++j) {
+    cpy[j - 1] = data_[j];
+  }
 
-    for (size_t j = i + 1; j < size_; ++j) {
-        cpy[j - 1] = data_[j];
-    }
-
-    swap(cpy);
+  swap(cpy);
 }
 
 template< class T >
 void topit::Vector< T >::erase(size_t start, size_t end)
 {
-    if (start > size_ || end > size_ || start >= end) {
-        throw std::out_of_range("Invalid erase range");
-    }
-    size_t remove_count = end - start;
-    size_t new_size = size_ - remove_count;
-    Vector< T > cpy(new_size);
+  if (start > size_ || end > size_ || start > end) {
+    throw std::out_of_range("Invalid erase range");
+  }
+  if (start == end) {
+    return;
+  }
+  if (end == size_) {
+    size_ -= end - start;
+    return;
+  }
+  size_t remove_count = end - start;
+  size_t new_size = size_ - remove_count;
+  Vector< T > cpy(new_size);
 
-    for (size_t j = 0; j < start; ++j) {
-        cpy[j] = data_[j];
-    }
+  for (size_t j = 0; j < start; ++j) {
+    cpy[j] = data_[j];
+  }
 
-    for (size_t j = end; j < size_; ++j) {
-        cpy[j - remove_count] = data_[j];
-    }
+  for (size_t j = end; j < size_; ++j) {
+    cpy[j - remove_count] = data_[j];
+  }
 
-    swap(cpy);
+  swap(cpy);
 }
 
 template< class T >

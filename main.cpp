@@ -478,6 +478,10 @@ bool testEraseRange()
     res = res && v.getSize() == 3;
     res = res && v[0] == 5 && v[1] == 6 && v[2] == 7;
 
+    v.erase(1, 1);
+    res = res && v.getSize() == 3;
+    res = res && v[0] == 5 && v[1] == 6 && v[2] == 7;
+
     v.erase(0, v.getSize());
     res = res && v.isEmpty();
   } catch (...) {
@@ -502,14 +506,6 @@ bool testEraseRangeOutOfRange()
 
   try {
     v.erase(1, 3);
-    return false;
-  } catch (const std::out_of_range &) {
-  } catch (...) {
-    return false;
-  }
-
-  try {
-    v.erase(1, 1);
     return false;
   } catch (const std::out_of_range &) {
   } catch (...) {
