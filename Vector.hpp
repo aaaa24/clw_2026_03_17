@@ -17,6 +17,13 @@ namespace topit {
     Vector & operator=(const Vector & v);
     Vector & operator=(Vector && v) noexcept;
 
+    VIter< T > begin();
+    VIter< T > end();
+    VCIter< T > begin() const;
+    VCIter< T > end() const;
+    VCIter< T > cbegin() const;
+    VCIter< T > cend() const;
+
     void swap(Vector< T > & v) noexcept;
 
     bool isEmpty() const noexcept;
@@ -114,6 +121,42 @@ topit::Vector< T > & topit::Vector< T >::operator=(Vector< T > && v) noexcept
   Vector< T > cpy = std::move(v);
   swap(cpy);
   return *this;
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::begin()
+{
+  return VIter< T >{data_};
+}
+
+template< class T >
+topit::VIter< T > topit::Vector< T >::end()
+{
+  return VIter< T >{data_ + size_};
+}
+
+template< class T >
+topit::VCIter< T > topit::Vector< T >::begin() const
+{
+  return VCIter< T >{data_};
+}
+
+template< class T >
+topit::VCIter< T > topit::Vector< T >::end() const
+{
+  return VCIter< T >{data_ + size_};
+}
+
+template< class T >
+topit::VCIter< T > topit::Vector< T >::cbegin() const
+{
+  return VCIter< T >{data_};
+}
+
+template< class T >
+topit::VCIter< T > topit::Vector< T >::cend() const
+{
+  return VCIter< T >{data_ + size_};
 }
 
 template< class T >

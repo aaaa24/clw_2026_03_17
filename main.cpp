@@ -89,6 +89,62 @@ bool testMoveOperatorForNonEmpty()
     return v2.getSize() == 2 && v2[0] == 1 && v2[1] == 2;
 }
 
+bool testBegin()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  topit::VIter< int > iter = v.begin();
+  return *iter == 42;
+}
+
+bool testEnd()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  topit::VIter< int > iter = v.begin() + 2;
+  return iter == v.end();
+}
+
+bool testBeginConst()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  const topit::Vector< int > & vc = v;
+  topit::VCIter< int > iter = vc.begin();
+  return *iter == 42;
+}
+
+bool testEndConst()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  const topit::Vector< int > & vc = v;
+  topit::VCIter< int > iter = vc.begin() + 2;
+  return iter == vc.end();
+}
+
+bool testCBeginConst()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  topit::VCIter< int > iter = v.cbegin();
+  return *iter == 42;
+}
+
+bool testCEndConst()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  v.pushBack(52);
+  topit::VCIter< int > iter = v.cbegin() + 2;
+  return iter == v.cend();
+}
+
 bool testGetSize()
 {
   topit::Vector< int > v;
@@ -413,6 +469,12 @@ int main()
     {"Copy operator self", testCopyOperatorSelf},
     {"Move operator for empty vector", testMoveOperatorForEmpty},
     {"Move operator for non-empty vector", testMoveOperatorForNonEmpty},
+    {"Get begin iterator", testBegin},
+    {"Get begin iterator", testEnd},
+    {"Get begin const iterator", testBeginConst},
+    {"Get begin const iterator", testEndConst},
+    {"Get cbegin const iterator", testCBeginConst},
+    {"Get cend const iterator", testCEndConst},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Inbound access", testElementInboundAccess},
