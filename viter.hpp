@@ -87,7 +87,7 @@ template< class T >
 topit::VIter< T > topit::VIter< T >::operator--(int)
 {
   VIter old = *this;
-  ++(*this);
+  --(*this);
   return old;
 }
 
