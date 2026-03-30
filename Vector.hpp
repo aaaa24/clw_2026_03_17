@@ -31,6 +31,8 @@ namespace topit {
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
     size_t getCapacity() const noexcept;
+    void reserve(size_t size);
+    void shrinkToFit();
 
     T & at(size_t pos);
     const T & at(size_t pos) const;
@@ -38,6 +40,10 @@ namespace topit {
     const T & operator[](size_t pos) const noexcept;
 
     void pushBack(const T & val);
+    void pushBack(T && val);
+    void pushBackCount(size_t k, const T & val);
+    template< class IT >
+    void pushBackRange(IT first, size_t size);
     void popBack();
 
     void insert(size_t pos, const T & val);
@@ -60,8 +66,12 @@ namespace topit {
     void extend();
 
     template< class U >
-    void generalInsert(size_t pos, U && val);
+    void unsafePushBack(U && val);
+    template< class U >
+    void generalPushBack(U && val);
 
+    template< class U >
+    void generalInsert(size_t pos, U && val);
     template< class U >
     VIter< T > generalInsert(VIter< T > pos, U && val);
   };
@@ -263,13 +273,40 @@ const T & topit::Vector< T >::operator[](size_t pos) const noexcept
 }
 
 template< class T >
-void topit::Vector< T >::pushBack(const T & val)
+template< class U >
+void topit::Vector< T >::unsafePushBack(U && val)
+{
+  data_[size_] = std::forward< U >(val);
+  ++size_;
+}
+
+template< class T >
+template< class U >
+void topit::Vector< T >::generalPushBack(U && val)
 {
   if (size_ == capacity_) {
     extend();
   }
-  data_[size_] = val;
-  ++size_;
+  unsafePushBack(val);
+}
+
+template< class T >
+void topit::Vector< T >::pushBack(const T & val)
+{
+  generalPushBack(val);
+}
+
+template< class T >
+void topit::Vector< T >::pushBack(T && val)
+{
+  generalPushBack(std::move(val));
+}
+
+template< class T >
+template< class IT >
+void topit::Vector< T >::pushBackRange(IT first, size_t size)
+{
+  
 }
 
 template< class T >
