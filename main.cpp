@@ -273,7 +273,8 @@ bool testInsertOneToCorrectPos()
 
   bool res = true;
   try {
-    v.insert(0, 42);
+    int num = 42;
+    v.insert(0, num);
     res = res && v[0] == 42;
 
     v.insert(0, 52);

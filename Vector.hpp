@@ -39,6 +39,7 @@ namespace topit {
     void popBack();
 
     void insert(size_t pos, const T & val);
+    void insert(size_t pos, T && val);
     void insert(size_t pos, const Vector< T > & v, size_t fisrt, size_t last);
     VIter< T > insert(VIter< T > pos, const T & val);
     VIter< T > insert(VIter< T > pos, T && val);
@@ -55,6 +56,9 @@ namespace topit {
 
     explicit Vector(size_t size);
     void extend();
+
+    template< class U >
+    void generalInsert(size_t pos, U && val);
 
     template< class U >
     VIter< T > generalInsert(VIter< T > pos, U && val);
@@ -263,7 +267,8 @@ void topit::Vector< T >::popBack()
 }
 
 template< class T >
-void topit::Vector< T >::insert(size_t pos, const T & val)
+template< class U >
+void topit::Vector< T >::generalInsert(size_t pos, U && val)
 {
   if (pos > size_) {
     throw std::out_of_range("Out of array's size");
@@ -275,9 +280,21 @@ void topit::Vector< T >::insert(size_t pos, const T & val)
   for (size_t i = cpy.size_; i > pos; --i) {
     cpy.data_[i] = cpy.data_[i - 1];
   }
-  cpy.data_[pos] = val;
+  cpy.data_[pos] = std::forward< U >(val);
   ++cpy.size_;
   swap(cpy);
+}
+
+template< class T >
+void topit::Vector< T >::insert(size_t pos, const T & val)
+{
+  generalInsert(pos, val);
+}
+
+template< class T >
+void topit::Vector< T >::insert(size_t pos, T && val)
+{
+  generalInsert(pos, std::move(val));
 }
 
 template< class T >
