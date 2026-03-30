@@ -55,6 +55,9 @@ namespace topit {
 
     explicit Vector(size_t size);
     void extend();
+
+    template< class U >
+    VIter< T > generalInsert(VIter< T > pos, U && val);
   };
 
   template< class T >
@@ -305,10 +308,11 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t first,
 }
 
 template< class T >
-topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const T & val)
+template< class U >
+topit::VIter< T > topit::Vector< T >::generalInsert(VIter< T > pos, U && val)
 {
   if (pos == end()) {
-    pushBack(val);
+    pushBack(std::forward< U >(val));
     return VIter< T >{data_ + size_ - 1};
   }
 
@@ -319,7 +323,7 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const T & val)
   for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
     *cpy_iter = *iter;
   }
-  *cpy_iter = val;
+  *cpy_iter = std::forward< U >(val);
   ++cpy_iter;
   for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
     *cpy_iter = *iter;
@@ -330,28 +334,15 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const T & val)
 }
 
 template< class T >
+topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, const T & val)
+{
+  return generalInsert(pos, val);
+}
+
+template< class T >
 topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, T && val)
 {
-  if (pos == end()) {
-    pushBack(std::move(val));
-    return VIter< T >{data_+ size_ - 1};
-  }
-
-  std::ptrdiff_t index = pos - begin();
-
-  Vector< T > cpy{size_ + 1};
-  VIter< T > cpy_iter = cpy.begin();
-  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-  *cpy_iter = std::move(val);
-  ++cpy_iter;
-  for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-
-  swap(cpy);
-  return VIter< T >{data_ + index};
+  return generalInsert(pos, std::move(val));
 }
 
 template< class T >
