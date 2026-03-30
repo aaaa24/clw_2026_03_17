@@ -1,6 +1,7 @@
 #ifndef TOP_IT_VECTOR_HPP
-#define TOP_IT_VECROT_HPP
+#define TOP_IT_VECTOR_HPP
 
+#include <initializer_list>
 #include <cstddef>
 
 #include "VIter.hpp"
@@ -14,6 +15,7 @@ namespace topit {
     Vector(Vector && v) noexcept;
     ~Vector();
     Vector(size_t size, const T & init);
+    explicit Vector(std::initializer_list< T > il);
     Vector & operator=(const Vector & v);
     Vector & operator=(Vector && v) noexcept;
 
@@ -112,6 +114,16 @@ topit::Vector< T >::Vector(size_t size, const T & init):
 {
   for (size_t i = 0; i < size; ++i) {
     data_[i] = init;
+  }
+}
+
+template< class T >
+topit::Vector< T >::Vector(std::initializer_list< T > il):
+  Vector(il.size())
+{
+  size_t i = 0;
+  for (auto iter = il.begin(); iter != il.end(); ++iter) {
+    data_[i++] = *iter;
   }
 }
 
@@ -307,7 +319,7 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t first,
     throw std::out_of_range("Incorrect start or end");
   }
   size_t insert_size = last - first;
-  Vector< T > cpy{size_ + insert_size};
+  Vector< T > cpy(size_ + insert_size);
 
   for (size_t i = 0; i < pos; ++i) {
     cpy[i] = data_[i];
@@ -335,7 +347,7 @@ topit::VIter< T > topit::Vector< T >::generalInsert(VIter< T > pos, U && val)
 
   std::ptrdiff_t index = pos - begin();
 
-  Vector< T > cpy{size_ + 1};
+  Vector< T > cpy(size_ + 1);
   VIter< T > cpy_iter = cpy.begin();
   for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
     *cpy_iter = *iter;
@@ -378,7 +390,7 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, VIter< T > first, V
   }
 
   std::ptrdiff_t insert_size = last - first;
-  Vector< T > cpy{size_ + insert_size};
+  Vector< T > cpy(size_ + insert_size);
   VIter< T > cpy_iter = cpy.begin();
 
   for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
@@ -406,7 +418,7 @@ void topit::Vector< T >::erase(size_t pos)
     return;
   }
 
-  Vector< T > cpy{size_ - 1};
+  Vector< T > cpy(size_ - 1);
 
   for (size_t j = 0; j < pos; ++j) {
     cpy[j] = data_[j];
@@ -432,7 +444,7 @@ void topit::Vector< T >::erase(size_t first, size_t last)
     return;
   }
   size_t remove_count = last - first;
-  Vector< T > cpy{size_ - remove_count};
+  Vector< T > cpy(size_ - remove_count);
 
   for (size_t j = 0; j < first; ++j) {
     cpy[j] = data_[j];
@@ -454,7 +466,7 @@ topit::VIter< T > topit::Vector< T >::erase(VIter< T > pos)
   }
 
   std::ptrdiff_t index = pos - begin();
-  Vector< T > cpy{size_ - 1};
+  Vector< T > cpy(size_ - 1);
   VIter< T > cpy_iter = cpy.begin();
 
   for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
@@ -482,7 +494,7 @@ topit::VIter< T > topit::Vector< T >::erase(VIter< T > first, VIter< T > last)
   std::ptrdiff_t index = first - begin();
   std::ptrdiff_t remove_count = last - first;
 
-  Vector< T > cpy{size_ - remove_count};
+  Vector< T > cpy(size_ - remove_count);
   VIter< T > cpy_iter = cpy.begin();
 
   for (VIter< T > iter = begin(); iter < first; ++iter, ++cpy_iter) {
