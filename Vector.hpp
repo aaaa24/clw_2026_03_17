@@ -101,6 +101,7 @@ topit::Vector< T >::Vector(const Vector< T > & v):
       data_[j].~T();
     }
     ::operator delete (data_);
+    throw;
   }
 }
 
@@ -143,6 +144,7 @@ topit::Vector< T >::Vector(size_t size, const T & init):
       data_[j].~T();
     }
     ::operator delete (data_);
+    throw;
   }
 }
 
@@ -161,6 +163,7 @@ topit::Vector< T >::Vector(std::initializer_list< T > il):
       data_[j].~T();
     }
     ::operator delete (data_);
+    throw;
   }
 }
 
@@ -233,25 +236,15 @@ void topit::Vector< T >::swap(Vector< T > & v) noexcept
 template< class T >
 void topit::Vector< T >::extend()
 {
-  size_t new_capacity = 0;
-  if (capacity_ == 0) {
-    new_capacity = 1;
-  } else {
-    new_capacity = 2 * capacity_;
-  }
-  T * new_data = static_cast< T * >(::operator new (sizeof(T) * new_capacity));
-  // T * new_data = new T[new_capacity];
+  const size_t new_capacity = (capacity_ == 0) ? 1 : 2 * capacity_;
+
+  Vector< T > cpy(new_capacity);
+  cpy.size_ = 0;
   for (size_t i = 0; i < size_; ++i) {
-    try {
-      new_data[i] = data_[i];
-    } catch (...) {
-      delete [] new_data;
-      throw;
-    }
+    new (cpy.data_ + i) T(data_[i]);
+    ++cpy.size_;
   }
-  delete [] data_;
-  data_ = new_data;
-  capacity_ = new_capacity;
+  swap(cpy);
 }
 
 template< class T >
