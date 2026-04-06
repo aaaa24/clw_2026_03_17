@@ -280,6 +280,22 @@ bool testPushBack()
   return res;
 }
 
+bool testPushBackCount()
+{
+  topit::Vector< int > v;
+
+  v.pushBackCount(3, 42);
+  bool res = v.getSize() == 3;
+  res = res && v[0] == 42 && v[1] == 42 && v[2] == 42;
+
+  int num = 52;
+  v.pushBackCount(3, num);
+  res = res && v.getSize() == 6;
+  res = res && v[3] == 52 && v[4] == 52 && v[5] == 52;
+
+  return res;
+}
+
 bool testPopBack()
 {
   topit::Vector< int > v;
@@ -629,6 +645,7 @@ int main()
     {"OutOfBound const access", testElementOutOfBoundConstAccess},
     {"Operator []", testOperatorElementAccess},
     {"Push back", testPushBack},
+    {"Push back count", testPushBackCount},
     {"Pop back", testPopBack},
     {"Insert one element to correct position", testInsertOneToCorrectPos},
     {"Insert one element to incorrect position", testInsertOneToIncorrectPos},

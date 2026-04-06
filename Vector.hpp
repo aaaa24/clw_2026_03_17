@@ -42,6 +42,7 @@ namespace topit {
     void pushBack(const T & val);
     void pushBack(T && val);
     void pushBackCount(size_t k, const T & val);
+    void pushBackCount(size_t k, T && val);
     template< class IT >
     void pushBackRange(IT first, size_t size);
     void popBack();
@@ -69,6 +70,8 @@ namespace topit {
     void unsafePushBack(U && val);
     template< class U >
     void generalPushBack(U && val);
+    template< class U >
+    void generalPushBackCount(size_t k, U && val);
 
     template< class U >
     void generalInsert(size_t pos, U && val);
@@ -332,6 +335,30 @@ template< class T >
 void topit::Vector< T >::pushBack(T && val)
 {
   generalPushBack(std::move(val));
+}
+
+template< class T >
+template< class U >
+void topit::Vector< T >::generalPushBackCount(size_t k, U && val)
+{
+  if (capacity_ < size_ + k) {
+    reserve(size_ + k);
+  }
+  for (size_t i = 0; i < k; ++i) {
+    unsafePushBack(val);
+  }
+}
+
+template< class T >
+void topit::Vector< T >::pushBackCount(size_t k, const T & val)
+{
+  generalPushBackCount(k, val);
+}
+
+template< class T >
+void topit::Vector< T >::pushBackCount(size_t k, T && val)
+{
+  generalPushBackCount(k, std::move(val));
 }
 
 template< class T >
