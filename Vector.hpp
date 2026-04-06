@@ -133,8 +133,16 @@ template< class T >
 topit::Vector< T >::Vector(size_t size, const T & init):
   Vector(size)
 {
-  for (size_t i = 0; i < size; ++i) {
-    data_[i] = init;
+  size_t i = 0;
+  try {
+    for (; i < size; ++i) {
+      new (data_ + i) T(init);
+    }
+  } catch (...) {
+    for (size_t j = 0; j < i; ++j) {
+      data_[j].~T();
+    }
+    ::operator delete (data_);
   }
 }
 
