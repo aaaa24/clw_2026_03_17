@@ -151,8 +151,16 @@ topit::Vector< T >::Vector(std::initializer_list< T > il):
   Vector(il.size())
 {
   size_t i = 0;
-  for (auto iter = il.begin(); iter != il.end(); ++iter) {
-    data_[i++] = *iter;
+  try {
+    for (auto iter = il.begin(); iter != il.end(); ++iter) {
+      new (data_ + i) T(*iter);
+      ++i;
+    }
+  } catch (...) {
+    for (size_t j = 0; j < i; ++j) {
+      data_[j].~T();
+    }
+    ::operator delete (data_);
   }
 }
 
