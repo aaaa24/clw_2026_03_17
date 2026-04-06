@@ -182,6 +182,15 @@ bool testGetCapacity()
   return v.getCapacity() == 1;
 }
 
+bool testReserve()
+{
+  topit::Vector< int > v({1, 2, 3});
+  v.reserve(100);
+  bool res = v.getCapacity() == 100;
+  res = res && v[0] == 1 && v[1] == 2 && v[2] == 3;
+  return res;
+}
+
 bool testElementInboundAccess()
 {
   topit::Vector< int > v;
@@ -602,6 +611,7 @@ int main()
     {"Swap", testSwap},
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
+    {"Reserve", testReserve},
     {"Inbound access", testElementInboundAccess},
     {"Inbound const access", testElementInboundConstAccess},
     {"OutOfBound access", testElementOutOfBoundAccess},

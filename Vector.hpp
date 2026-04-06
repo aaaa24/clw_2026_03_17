@@ -237,14 +237,7 @@ template< class T >
 void topit::Vector< T >::extend()
 {
   const size_t new_capacity = (capacity_ == 0) ? 1 : 2 * capacity_;
-
-  Vector< T > cpy(new_capacity);
-  cpy.size_ = 0;
-  for (size_t i = 0; i < size_; ++i) {
-    new (cpy.data_ + i) T(data_[i]);
-    ++cpy.size_;
-  }
-  swap(cpy);
+  reserve(new_capacity);
 }
 
 template< class T >
@@ -263,6 +256,18 @@ template< class T >
 size_t topit::Vector< T >::getCapacity() const noexcept
 {
   return capacity_;
+}
+
+template< class T >
+void topit::Vector< T >::reserve(size_t size)
+{
+  Vector< T > cpy(size);
+  cpy.size_ = 0;
+  for (size_t i = 0; i < size_; ++i) {
+    new (cpy.data_ + i) T(data_[i]);
+    ++cpy.size_;
+  }
+  swap(cpy);
 }
 
 template< class T >
