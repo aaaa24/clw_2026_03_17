@@ -398,25 +398,8 @@ template< class T >
 template< class U >
 topit::VIter< T > topit::Vector< T >::generalInsert(VIter< T > pos, U && val)
 {
-  if (pos == end()) {
-    pushBack(std::forward< U >(val));
-    return VIter< T >{data_ + size_ - 1};
-  }
-
-  std::ptrdiff_t index = pos - begin();
-
-  Vector< T > cpy(size_ + 1);
-  VIter< T > cpy_iter = cpy.begin();
-  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-  *cpy_iter = std::forward< U >(val);
-  ++cpy_iter;
-  for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-
-  swap(cpy);
+  size_t index = static_cast<size_t>(pos - begin());
+  generalInsert(index, std::forward<U>(val));
   return VIter< T >{data_ + index};
 }
 
