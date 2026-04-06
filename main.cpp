@@ -621,7 +621,7 @@ int main()
     {"Erase range", testEraseMany},
     {"Erase range out of range", testEraseOutOfRange},
     {"Erase one element by iter", testIterEraseOne},
-    {"Erase many elements by iter", testIterEraseMany},
+    {"Erase many elements by iter", testIterEraseMany}
   };
   const size_t count = sizeof(tests) / sizeof(test_t);
   std::cout << std::boolalpha;

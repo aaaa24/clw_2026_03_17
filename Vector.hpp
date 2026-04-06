@@ -89,10 +89,18 @@ topit::Vector< T >::Vector():
 
 template< class T >
 topit::Vector< T >::Vector(const Vector< T > & v):
-  Vector(v.getSize())
+  Vector(v.size_)
 {
-  for (size_t i = 0; i < v.getSize(); ++i) {
-    data_[i] = v[i];
+  size_t i = 0;
+  try {
+    for (; i < v.getSize(); ++i) {
+      new (data_ + i) T(v[i]);
+    }
+  } catch (...) {
+    for (size_t j = 0; j < i; ++j) {
+      data_[j].~T();
+    }
+    ::operator delete (data_);
   }
 }
 
@@ -108,12 +116,15 @@ topit::Vector< T >::Vector(Vector< T > && v) noexcept:
 template< class T >
 topit::Vector< T >::~Vector()
 {
-  delete [] data_;
+  for (size_t i = 0; i < size_; ++i) {
+    data_[i].~T();
+  }
+  ::operator delete (data_);
 }
 
 template< class T >
 topit::Vector< T >::Vector(size_t size):
-  data_(size ? new T[size] : nullptr),
+  data_(size ? static_cast< T * >(::operator new (sizeof(T) * size)) : nullptr),
   size_(size),
   capacity_(size)
 {}
@@ -212,7 +223,8 @@ void topit::Vector< T >::extend()
   } else {
     new_capacity = 2 * capacity_;
   }
-  T * new_data = new T[new_capacity];
+  T * new_data = static_cast< T * >(::operator new (sizeof(T) * new_capacity));
+  // T * new_data = new T[new_capacity];
   for (size_t i = 0; i < size_; ++i) {
     try {
       new_data[i] = data_[i];
