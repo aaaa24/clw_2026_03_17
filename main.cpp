@@ -191,6 +191,16 @@ bool testReserve()
   return res;
 }
 
+bool testShrinkToFit()
+{
+  topit::Vector< int > v({1, 2, 3});
+  v.reserve(100);
+  v.shrinkToFit();
+  bool res = v.getCapacity() == 3;
+  res = res && v[0] == 1 && v[1] == 2 && v[2] == 3;
+  return res;
+}
+
 bool testElementInboundAccess()
 {
   topit::Vector< int > v;
@@ -612,6 +622,7 @@ int main()
     {"Get size", testGetSize},
     {"Get capacity", testGetCapacity},
     {"Reserve", testReserve},
+    {"Shrink to fit", testShrinkToFit},
     {"Inbound access", testElementInboundAccess},
     {"Inbound const access", testElementInboundConstAccess},
     {"OutOfBound access", testElementOutOfBoundAccess},

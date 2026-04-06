@@ -271,6 +271,12 @@ void topit::Vector< T >::reserve(size_t size)
 }
 
 template< class T >
+void topit::Vector< T >::shrinkToFit()
+{
+  reserve(size_);
+}
+
+template< class T >
 T & topit::Vector< T >::at(size_t pos)
 {
   const Vector< T > * cthis = this;
