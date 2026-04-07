@@ -516,10 +516,6 @@ void topit::Vector< T >::erase(size_t first, size_t last)
   if (first == last) {
     return;
   }
-  if (last == size_) {
-    size_ -= last - first;
-    return;
-  }
   size_t remove_count = last - first;
   Vector< T > cpy(size_ - remove_count);
   cpy.size_ = 0;
