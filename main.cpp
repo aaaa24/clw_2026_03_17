@@ -40,6 +40,27 @@ bool testMoveConstructorForNonEmpty()
   return res;
 }
 
+bool testInitConstructor()
+{
+  int init = 42;
+  topit::Vector< int > v(3, init);
+  bool res = v.getSize() == 3;
+  res = res && v[0] == 42 && v[1] == 42 && v[2] == 42;
+  return res;
+}
+
+bool testInitializerList()
+{
+  topit::Vector< int > v({1, 2, 3});
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool testEmptyInitializerList()
+{
+  topit::Vector< int > v({});
+  return v.isEmpty();
+}
+
 bool testCopyOperatorForEmpty()
 {
     topit::Vector< int > v1;
@@ -67,18 +88,6 @@ bool testCopyOperatorSelf()
     v.pushBack(2);
     v = v;
     return v.getSize() == 2 && v[0] == 1 && v[1] == 2;
-}
-
-bool testInitializerList()
-{
-  topit::Vector< int > v({1, 2, 3});
-  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
-}
-
-bool testEmptyInitializerList()
-{
-  topit::Vector< int > v({});
-  return v.isEmpty();
 }
 
 bool testMoveOperatorForEmpty()
@@ -641,6 +650,7 @@ int main()
     {"Copy non-empty vector", testCopyConstructorForNonEmpty},
     {"Move empty vector", testMoveConstructorForEmpty},
     {"Move non-empty vector", testMoveConstructorForNonEmpty},
+    {"Constructor with init value", testInitConstructor},
     {"Non-empty vector for non-empty initializer list", testInitializerList},
     {"Empty vector for empty initializer list", testEmptyInitializerList},
     {"Copy operator for empty vector", testCopyOperatorForEmpty},
