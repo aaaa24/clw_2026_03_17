@@ -382,7 +382,10 @@ void topit::Vector< T >::pushBackRange(IT first, size_t size)
 template< class T >
 void topit::Vector< T >::popBack()
 {
-  --size_;
+  if (size_ > 0) {
+    --size_;
+    data_[size_].~T();
+  }
 }
 
 template< class T >
