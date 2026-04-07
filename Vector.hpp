@@ -341,12 +341,14 @@ template< class T >
 template< class U >
 void topit::Vector< T >::generalPushBackCount(size_t k, U && val)
 {
-  if (capacity_ < size_ + k) {
-    reserve(size_ + k);
+  Vector< T > cpy = *this;
+  if (cpy.capacity_ < cpy.size_ + k) {
+    cpy.reserve(cpy.size_ + k);
   }
   for (size_t i = 0; i < k; ++i) {
-    unsafePushBack(val);
+    cpy.unsafePushBack(val);
   }
+  swap(cpy);
 }
 
 template< class T >
