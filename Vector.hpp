@@ -311,7 +311,7 @@ template< class T >
 template< class U >
 void topit::Vector< T >::unsafePushBack(U && val)
 {
-  data_[size_] = std::forward< U >(val);
+  new (data_ + size_) T(std::forward< U >(val));
   ++size_;
 }
 
@@ -341,9 +341,10 @@ template< class T >
 template< class U >
 void topit::Vector< T >::generalPushBackCount(size_t k, U && val)
 {
-  Vector< T > cpy = *this;
-  if (cpy.capacity_ < cpy.size_ + k) {
-    cpy.reserve(cpy.size_ + k);
+  Vector< T > cpy(std::max(capacity_, size_ + k));
+  cpy.size_ = 0;
+  for (size_t i = 0; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
   for (size_t i = 0; i < k; ++i) {
     cpy.unsafePushBack(val);
@@ -367,9 +368,10 @@ template< class T >
 template< class IT >
 void topit::Vector< T >::pushBackRange(IT first, size_t size)
 {
-  Vector< T > cpy = *this;
-  if (cpy.capacity_ < cpy.size_ + size) {
-    cpy.reserve(cpy.size_ + size);
+  Vector< T > cpy(std::max(capacity_, size_ + size));
+  cpy.size_ = 0;
+  for (size_t i = 0; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
   for (size_t i = 0; i < size; ++i) {
     cpy.unsafePushBack(*(first++));
