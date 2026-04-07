@@ -365,12 +365,14 @@ template< class T >
 template< class IT >
 void topit::Vector< T >::pushBackRange(IT first, size_t size)
 {
-  if (capacity_ < size_ + size) {
-    reserve(size_ + size);
+  Vector< T > cpy = *this;
+  if (cpy.capacity_ < cpy.size_ + size) {
+    cpy.reserve(cpy.size_ + size);
   }
   for (size_t i = 0; i < size; ++i) {
-    unsafePushBack(*(first++));
+    cpy.unsafePushBack(*(first++));
   }
+  swap(cpy);
 }
 
 template< class T >
@@ -393,7 +395,7 @@ void topit::Vector< T >::generalInsert(size_t pos, U && val)
   for (size_t i = cpy.size_; i > pos; --i) {
     cpy.data_[i] = cpy.data_[i - 1];
   }
-  cpy.data_[pos] = std::forward< U >(val);
+  new (cpy.data_ + pos) T(std::forward< U >(val));
   ++cpy.size_;
   swap(cpy);
 }
