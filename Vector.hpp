@@ -392,15 +392,14 @@ void topit::Vector< T >::generalInsert(size_t pos, U && val)
   if (pos > size_) {
     throw std::out_of_range("Out of array's size");
   }
-  Vector< T > cpy = *this;
-  if (cpy.size_ == cpy.capacity_) {
-    cpy.extend();
+  Vector< T > cpy(std::max(capacity_, size_ + 1));
+  cpy.size_ = 0;
+  for (size_t i = 0; i < pos; ++i)
+    cpy.unsafePushBack(data_[i]);
+  cpy.unsafePushBack(std::forward< U >(val));
+  for (size_t i = pos; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-  for (size_t i = cpy.size_; i > pos; --i) {
-    cpy.data_[i] = cpy.data_[i - 1];
-  }
-  new (cpy.data_ + pos) T(std::forward< U >(val));
-  ++cpy.size_;
   swap(cpy);
 }
 
