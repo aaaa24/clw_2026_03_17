@@ -489,20 +489,14 @@ void topit::Vector< T >::erase(size_t pos)
   if (pos >= size_) {
     throw std::out_of_range("Out of array's size");
   }
-  if (pos == size_ - 1) {
-    popBack();
-    return;
-  }
-
   Vector< T > cpy(size_ - 1);
-
-  for (size_t j = 0; j < pos; ++j) {
-    cpy[j] = data_[j];
+  cpy.size_ = 0;
+  for (size_t i = 0; i < pos; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-  for (size_t j = pos + 1; j < size_; ++j) {
-    cpy[j - 1] = data_[j];
+  for (size_t i = pos + 1; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-
   swap(cpy);
 }
 
