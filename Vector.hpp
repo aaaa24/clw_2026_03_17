@@ -515,15 +515,13 @@ void topit::Vector< T >::erase(size_t first, size_t last)
   }
   size_t remove_count = last - first;
   Vector< T > cpy(size_ - remove_count);
-
-  for (size_t j = 0; j < first; ++j) {
-    cpy[j] = data_[j];
+  cpy.size_ = 0;
+  for (size_t i = 0; i < first; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-
-  for (size_t j = last; j < size_; ++j) {
-    cpy[j - remove_count] = data_[j];
+  for (size_t i = last; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-
   swap(cpy);
 }
 
