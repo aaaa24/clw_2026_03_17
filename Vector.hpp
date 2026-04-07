@@ -425,20 +425,17 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T > & v, size_t first,
     throw std::out_of_range("Incorrect start or end");
   }
   size_t insert_size = last - first;
-  Vector< T > cpy(size_ + insert_size);
-
+  Vector< T > cpy(std::max(capacity_, size_ + insert_size));
+  cpy.size_ = 0;
   for (size_t i = 0; i < pos; ++i) {
-    cpy[i] = data_[i];
+    cpy.unsafePushBack(data_[i]);
   }
-
-  for (size_t i = 0; i < insert_size; ++i) {
-    cpy[pos + i] = v.data_[first + i];
+  for (size_t i = first; i < last; ++i) {
+    cpy.unsafePushBack(v.data_[i]);
   }
-
-  for (size_t i = 0; i < size_ - pos; ++i) {
-    cpy[pos + insert_size + i] = data_[pos + i];
+  for (size_t i = pos; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-
   swap(cpy);
 }
 
