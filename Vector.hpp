@@ -543,26 +543,10 @@ topit::VIter< T > topit::Vector< T >::erase(VIter< T > first, VIter< T > last)
   if (first == last) {
     return last;
   }
-  if (last == end()) {
-    size_ -= last - first;
-    return end();
-  }
-
-  std::ptrdiff_t index = first - begin();
-  std::ptrdiff_t remove_count = last - first;
-
-  Vector< T > cpy(size_ - remove_count);
-  VIter< T > cpy_iter = cpy.begin();
-
-  for (VIter< T > iter = begin(); iter < first; ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-  for (VIter< T > iter = last; iter < end(); ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-
-  swap(cpy);
-  return VIter< T >{data_ + index};
+  size_t index_first = first - begin();
+  size_t index_last  = last - begin();
+  erase(index_first, index_last);
+  return VIter< T >{data_ + index_first};
 }
 
 template< class T >
