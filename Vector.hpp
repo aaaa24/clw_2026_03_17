@@ -532,23 +532,8 @@ void topit::Vector< T >::erase(size_t first, size_t last)
 template< class T >
 topit::VIter< T > topit::Vector< T >::erase(VIter< T > pos)
 {
-  if (pos == end() - 1) {
-    popBack();
-    return end();
-  }
-
-  std::ptrdiff_t index = pos - begin();
-  Vector< T > cpy(size_ - 1);
-  VIter< T > cpy_iter = cpy.begin();
-
-  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-  for (VIter< T > iter = pos + 1; iter < end(); ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-
-  swap(cpy);
+  size_t index = pos - begin();
+  erase(index);
   return VIter< T >{data_ + index};
 }
 
