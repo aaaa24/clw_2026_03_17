@@ -365,7 +365,12 @@ template< class T >
 template< class IT >
 void topit::Vector< T >::pushBackRange(IT first, size_t size)
 {
-  
+  if (capacity_ < size_ + size) {
+    reserve(size_ + size);
+  }
+  for (size_t i = 0; i < size; ++i) {
+    unsafePushBack(*(first++));
+  }
 }
 
 template< class T >

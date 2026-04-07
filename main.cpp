@@ -296,6 +296,19 @@ bool testPushBackCount()
   return res;
 }
 
+bool testPushBackRange()
+{
+  topit::Vector< int > v1({1, 2, 3, 4, 5, 6});
+  topit::VCIter< int > iter = v1.cbegin() + 2;
+
+  topit::Vector< int > v2;
+  v2.pushBackRange(iter, 3);
+
+  bool res = v2.getSize() == 3;
+  res = res && v2[0] == 3 && v2[1] == 4 && v2[2] == 5;
+  return res;
+}
+
 bool testPopBack()
 {
   topit::Vector< int > v;
@@ -646,6 +659,7 @@ int main()
     {"Operator []", testOperatorElementAccess},
     {"Push back", testPushBack},
     {"Push back count", testPushBackCount},
+    {"Push back range", testPushBackRange},
     {"Pop back", testPopBack},
     {"Insert one element to correct position", testInsertOneToCorrectPos},
     {"Insert one element to incorrect position", testInsertOneToIncorrectPos},
