@@ -466,29 +466,19 @@ topit::VIter< T > topit::Vector< T >::insert(VIter< T > pos, VIter< T > first, V
   if (first == last) {
     return pos;
   }
-
-  std::ptrdiff_t index = pos - begin();
-  if (pos == end()) {
-    for (VIter< T > iter = first; iter < last; ++iter) {
-      pushBack(*iter);
-    }
-    return VIter< T >{data_ + index};
+  size_t index = pos - begin();
+  size_t insert_size = last - first;
+  Vector< T > cpy(std::max(capacity_, size_ + insert_size));
+  cpy.size_ = 0;
+  for (size_t i = 0; i < index; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-
-  std::ptrdiff_t insert_size = last - first;
-  Vector< T > cpy(size_ + insert_size);
-  VIter< T > cpy_iter = cpy.begin();
-
-  for (VIter< T > iter = begin(); iter < pos; ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
+  for (VIter< T > it = first; it != last; ++it) {
+    cpy.unsafePushBack(*it);
   }
-  for (VIter< T > iter = first; iter < last; ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
+  for (size_t i = index; i < size_; ++i) {
+    cpy.unsafePushBack(data_[i]);
   }
-  for (VIter< T > iter = pos; iter < end(); ++iter, ++cpy_iter) {
-    *cpy_iter = *iter;
-  }
-
   swap(cpy);
   return VIter< T >{data_ + index};
 }
